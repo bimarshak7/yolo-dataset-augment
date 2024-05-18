@@ -82,9 +82,9 @@ def main():
                     augment_and_save(
                         image, annotations, output_image_path,
                         output_annotation_path, transform)
-            except Exception as exp:
-                print(exp)
-                print(f'Failed to augment image: {filename}')
+            except Exception:
+                print(f'Failed to augment image: {
+                      filename} due to bounding box conversion error')
 
     except FileNotFoundError as e:
         print(e)
