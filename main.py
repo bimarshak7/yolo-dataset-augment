@@ -26,6 +26,9 @@ parser.add_argument('--out', type=str, default='aug_data',
                     help='Number of training epochs.')
 parser.add_argument('--prefix', type=str, default='aug',
                     help='Prefix to add to augmented output files')
+parser.add_argument('--min_visibility', type=float, default=0.4,
+                    help='Min visibility needed to preserve bbox after image\
+                    transformation')
 
 # parse commandline arguments
 args = parser.parse_args()
@@ -33,6 +36,7 @@ args = parser.parse_args()
 input_dir = args.data
 output_dir = args.out
 out_prefix = args.prefix
+min_visibility = args.min_visibility
 
 
 def main():
@@ -56,7 +60,7 @@ def main():
 
         # get transformation pipeline
         transform = get_transformer(data_format="yolo",
-                                    min_visibility=0.4)
+                                    min_visibility=min_visibility)
 
         # create progress bar with list of input images
         pbar = tqdm(os.listdir(train_images_dir))
@@ -82,7 +86,7 @@ def main():
                     augment_and_save(
                         image, annotations, output_image_path,
                         output_annotation_path, transform)
-            except Exception:
+            except ValueError:
                 print(f'Failed to augment image: {
                       filename} due to bounding box conversion error')
 
